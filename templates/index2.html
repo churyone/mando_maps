@@ -40,7 +40,7 @@
                 Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
                 Math.sin(dLon / 2) * Math.sin(dLon / 2);
             var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            var distance = R * c*1000; // 킬로미터 단위 거리 반환
+            var distance = R * c; // 킬로미터 단위 거리 반환
             return distance;
         }
 
@@ -52,15 +52,18 @@
 
                     var markerOptions = {
                         position: markerPosition,
-                        map: map
+                        map: map,
+                        icon: {
+                            content: `<div style="background-color: #1E90FF; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;"></div>`
+                        }
                     };
 
-                    // 특정 인덱스의 마커를 빨간색으로 설정하고 설명에 미션 번호 추가
-                    var missionIndexes = [1, 33, 44, 193, 202, 364, 380, 437, 460, 422, 595, 700, 735, 772, 922, 909, 985];
-                    var missionIndex = missionIndexes.indexOf(index);
+                    // 특정 인덱스의 웨이포인트를 색상만 붉은색으로 설정하고 설명에 미션 번호 추가
+                    var missionIndexes = [1, 33, 44, 193, 202, 364, 380, 437, 460, 595, 605, 700, 735, 772, 922, 909, 985];
+                    var missionIndex = missionIndexes.indexOf(index+1);
                     if (missionIndex !== -1) {
                         markerOptions.icon = {
-                            content: `<div style="background-color: red; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;"></div>`
+                            content: `<div style="background-color: #FF4500; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;"></div>`
                         };
                         point.description += ` <strong>(미션 ${missionIndex}번)</strong>`;
                     }
@@ -72,7 +75,7 @@
                     if (index < waypoints.length - 1) {
                         var nextPoint = waypoints[index + 1];
                         var distance = calculateDistance(point.lat, point.lng, nextPoint.lat, nextPoint.lng);
-                        distanceText = `<br>다음 웨이포인트까지 거리: ${distance.toFixed(2)} m`;
+                        distanceText = `<br>다음 웨이포인트까지 거리: ${distance.toFixed(2)} km`;
                     }
 
                     // 마커에 정보창 추가

@@ -11,26 +11,28 @@ CLIENT_SECRET = os.getenv('NAVER_CLIENT_SECRET', 'Cx32NLrYuycqFzI7NiLU0xoNjRvnXT
 # 기본 라우트 정의
 @app.route('/')
 def index():
-    return render_template('index1.html', client_id=CLIENT_ID)
+    return render_template('index2.html', client_id=CLIENT_ID)
 
 # 웨이포인트 파일 제공 라우트 정의
 @app.route('/waypoints.txt')
 def waypoints():
-    return send_from_directory('.', 'waypoints1.txt')
+    return send_from_directory('.', 'test_path14.txt')
 
 # UTM 좌표를 위도/경도로 변환하여 제공하는 라우트 정의
 @app.route('/convert_utm')
 def convert_utm():
     waypoints = []
-    with open('waypoints1.txt', 'r') as f:
+    with open('test_path14.txt', 'r') as f:
         for line in f:
             # 공백을 기준으로 데이터를 분리하도록 수정
-            x, y, z = map(float, line.split())
+            #x, y, z = map(float, line.split())
+            x, y= map(float, line.split())
             lat, lng = utm.to_latlon(x, y, 52, 'N')  # 예시로 UTM Zone 52N 사용
             waypoints.append({
                 'lat': lat,
                 'lng': lng,
-                'description': f'x : {x}, y : {y}, sheading: {z:.2f}m'
+                #'description': f'x : {x}, y : {y}, sheading: {z:.2f}m'
+                'description': f'x : {x}, y : {y}'
             })
     return jsonify(waypoints)
 
