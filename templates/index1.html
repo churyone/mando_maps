@@ -28,6 +28,7 @@
 
         // 모든 정보창을 추적하는 배열 추가
         var infoWindows = [];
+        var currentCircle = null; // 현재 표시된 원을 저장하는 변수
 
         // Haversine 공식을 사용해 두 지점 간의 거리 계산
         function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -38,8 +39,8 @@
                 Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
                 Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))*1000;
-            var distance = R * c; // 킬로미터 단위 거리 반환
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var distance = R * c * 1000; // 킬로미터 단위 거리 반환
             return distance;
         }
 
@@ -59,7 +60,7 @@
                     if (index < waypoints.length - 1) {
                         var nextPoint = waypoints[index + 1];
                         var distance = calculateDistance(point.lat, point.lng, nextPoint.lat, nextPoint.lng);
-                        distanceText = `<br>다음 웨이포인트까지 거리: ${distance.toFixed(2)} km`;
+                        distanceText = `<br>다음 웨이포인트까지 거리: ${distance.toFixed(2)} m`;
                     }
 
                     // 마커에 정보창 추가
@@ -83,6 +84,7 @@
                     naver.maps.Event.addListener(marker, 'click', function() {
                         closeAllInfoWindows();
                         infoWindow.open(map, marker);
+                        drawCircle(markerPosition); // 원 그리기 함수 호출
                     });
 
                     console.log(`마커 추가 성공 - 웨이포인트 인덱스: ${index}, 위치: (${point.lat}, ${point.lng})`);
@@ -135,6 +137,26 @@
         });
 
         var distanceInfoDiv = document.getElementById('distance-info');
+
+        // 현재 웨이포인트에 3m 반지름의 원을 그리는 함수
+        function drawCircle(position) {
+            // 기존의 원이 있다면 제거
+            if (currentCircle !== null) {
+                currentCircle.setMap(null);
+            }
+
+            // 새로운 원 생성
+            currentCircle = new naver.maps.Circle({
+                map: map,
+                center: position,
+                radius: 3, // 반지름 3미터
+                strokeColor: '#5347AA',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#CFE7FF',
+                fillOpacity: 0.5
+            });
+        }
     </script>
 </body>
 </html>
